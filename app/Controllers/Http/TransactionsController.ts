@@ -1,5 +1,6 @@
 import httpServices from 'App/utils/HttpServices';
 import transactionServices from 'App/utils/TransactionServices';
+import typeServices from 'App/utils/TypeServices';
 import userServices from 'App/utils/UserServices';
 import AnalyticsViewValidator from 'App/Validators/AnalyticsViewValidator';
 import TransactionTypeSignValidator from 'App/Validators/TransactionTypeSignValidator';
@@ -13,7 +14,7 @@ export default class TransactionsController {
     const payload = await request.validate(TransactionTypeSignValidator)
     payload.user_id = user.id;
     try {
-      await transactionServices.create_sign(payload)
+      await typeServices.create_sign(payload)
       return httpServices.respond(response, 'Sign Added', payload, 201)
     } catch (error) {
       console.log(error)
@@ -25,7 +26,7 @@ export default class TransactionsController {
     const payload = await request.validate(TransactionVariableValidator)
     payload.user_id = user.id;
     try {
-      await transactionServices.create_type(payload)
+      await typeServices.create_type(payload)
       return httpServices.respond(response, 'Type Added', payload, 201)
     } catch (e) {
       console.log(e)
@@ -36,18 +37,18 @@ export default class TransactionsController {
     const user = await auth.user!
     const payload = await request.validate(TransactionValidator)
     if (!transactionServices.amount_validator(payload.amount)) return httpServices.respond(response, 'Invalid amount', payload, 400)
-    if (!await transactionServices.type_validator(payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction type', payload, 400)
-    if (payload.create === "y" &&(!await transactionServices.category_validator(payload.transaction_category, payload.transaction_type, user))){
+    if (!await typeServices.type_validator(payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction type', payload, 400)
+    if (payload.create === "y" &&(!await typeServices.category_validator(payload.transaction_category, payload.transaction_type, user))){
       delete payload.create
       var sanitized_payload=await request.validate(TransactionVariableValidator)
       sanitized_payload.user_id=user.id
       try {
-        await transactionServices.create_type(sanitized_payload)
+        await typeServices.create_type(sanitized_payload)
       } catch (error) {
         console.log(error)
       }
     }
-    if (! await transactionServices.category_validator(payload.transaction_category, payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction category add "create":"y" to add new category', payload, 400)
+    if (! await typeServices.category_validator(payload.transaction_category, payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction category add "create":"y" to add new category', payload, 400)
     await transactionServices.amount_sanitizer(payload)
     payload.user_id = user.id;
     delete payload.create
@@ -64,8 +65,8 @@ export default class TransactionsController {
     if (!transactionServices.amount_validator(payload.amount)) return httpServices.respond(response, 'Invalid amount', payload, 400)
     await transactionServices.amount_sanitizer(payload)
     payload.user_id = user.id;
-    if (! await transactionServices.type_validator(payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction type', payload, 400)
-    if (! await transactionServices.category_validator(payload.transaction_category, payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction category', payload, 400)
+    if (! await typeServices.type_validator(payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction type', payload, 400)
+    if (! await typeServices.category_validator(payload.transaction_category, payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction category', payload, 400)
     var transactions = await transactionServices.find_user_transactions(user)
     if (!transactions) return httpServices.respond(response, 'You have no transactions', params, 200)
     if (!await transactionServices.is_owner(user, params)) return httpServices.respond(response, 'Not Allowed', params, 403)
