@@ -21,12 +21,15 @@
 import Route from '@ioc:Adonis/Core/Route'
 Route.post('/signup', 'UsersController.signup')
 Route.post('/login', 'UsersController.login')
+Route.post('/signup/admin', 'AdminsController.signup')
+Route.post('/login/admin', 'AdminsController.login')
+
 Route.group(()=>{
   Route.resource('/transaction','TransactionsController').apiOnly().except(['show','index'])
-  Route.post('/sign','TransactionsController.createSign')
   Route.post('/type','TransactionsController.createType')
   Route.get('/balance','TransactionsController.viewBalance')
   Route.get('/view','TransactionsController.viewTransactions')
   Route.get('/view/:range','TransactionsController.viewTransactionsRange')
   Route.post('/analytics','TransactionsController.viewAnalytics')
-}).middleware('auth')
+}).middleware('auth:user')
+Route.post('/sign','AdminsController.createSign').middleware('auth:admin')

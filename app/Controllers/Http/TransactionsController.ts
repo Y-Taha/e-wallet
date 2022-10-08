@@ -3,24 +3,11 @@ import transactionServices from 'App/utils/TransactionServices';
 import typeServices from 'App/utils/TypeServices';
 import userServices from 'App/utils/UserServices';
 import AnalyticsViewValidator from 'App/Validators/AnalyticsViewValidator';
-import TransactionTypeSignValidator from 'App/Validators/TransactionTypeSignValidator';
 import TransactionValidator from 'App/Validators/TransactionValidator';
 import TransactionVariableValidator from 'App/Validators/TransactionVariableValidator';
 
 export default class TransactionsController {
 
-  public async createSign({ request, response, auth }) {
-    const user = await auth.user!
-    const payload = await request.validate(TransactionTypeSignValidator)
-    payload.user_id = user.id;
-    try {
-      await typeServices.create_sign(payload)
-      return httpServices.respond(response, 'Sign Added', payload, 201)
-    } catch (error) {
-      console.log(error)
-      return httpServices.respond(response, 'Sign creation failed', payload, 400)
-    }
-  }
   public async createType({ request, response, auth }) {
     const user = await auth.user!
     const payload = await request.validate(TransactionVariableValidator)
@@ -38,10 +25,10 @@ export default class TransactionsController {
     const payload = await request.validate(TransactionValidator)
     if (!transactionServices.amount_validator(payload.amount)) return httpServices.respond(response, 'Invalid amount', payload, 400)
     if (!await typeServices.type_validator(payload.transaction_type, user)) return httpServices.respond(response, 'Invalid transaction type', payload, 400)
-    if (payload.create === "y" &&(!await typeServices.category_validator(payload.transaction_category, payload.transaction_type, user))){
+    if (payload.create === "y" && (!await typeServices.category_validator(payload.transaction_category, payload.transaction_type, user))) {
       delete payload.create
-      var sanitized_payload=await request.validate(TransactionVariableValidator)
-      sanitized_payload.user_id=user.id
+      var sanitized_payload = await request.validate(TransactionVariableValidator)
+      sanitized_payload.user_id = user.id
       try {
         await typeServices.create_type(sanitized_payload)
       } catch (error) {

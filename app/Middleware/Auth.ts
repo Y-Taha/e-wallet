@@ -31,11 +31,18 @@ export default class AuthMiddleware {
      * driver
      */
     let guardLastAttempted: string | undefined
-
+    
     for (let guard of guards) {
       guardLastAttempted = guard
-
+      try {
+        await auth.use(guard).authenticate()
+      } catch (error) {
+        console.log(error);
+        
+      }
       if (await auth.use(guard).check()) {
+        console.log(guard);
+        
         /**
          * Instruct auth to use the given guard as the default guard for
          * the rest of the request, since the user authenticated

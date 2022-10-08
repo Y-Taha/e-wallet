@@ -7,7 +7,7 @@ export default class UsersController {
     public async login({ request, response,auth }) {
         var { uid, password } = request.only(["uid", "password"])
         try {
-            const token = await auth.use('api').attempt(uid, password)
+            const token = await auth.use('user').attempt(uid, password)
             return httpServices.respond(response,'Login Successfull',token,200)
         } catch (e) {
             console.log(e)
