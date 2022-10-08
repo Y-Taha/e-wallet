@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, beforeSave, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
-import Hash  from '@ioc:Adonis/Core/Hash';
+import Hash from '@ioc:Adonis/Core/Hash';
 import TransactionTypeSign from './TransactionTypeSign';
 
 export default class Admin extends BaseModel {
@@ -8,10 +8,10 @@ export default class Admin extends BaseModel {
   public id: number
 
   @column({})
-  public username:string
-  
+  public username: string
+
   @column({})
-  public password:string
+  public password: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -19,8 +19,8 @@ export default class Admin extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @hasMany(() => TransactionTypeSign,{
-    foreignKey:'user_id'
+  @hasMany(() => TransactionTypeSign, {
+    foreignKey: 'admin_id'
   })
   public transactionSign: HasMany<typeof TransactionTypeSign>
 

@@ -1,13 +1,30 @@
 import Transaction from "App/Models/Transaction"
 import TransactionTypeSign from "App/Models/TransactionTypeSign"
 import User from "App/Models/User"
+import typeServices from 'App/utils/TypeServices';
+import TransactionVariableValidator from "App/Validators/TransactionVariableValidator";
 import { DateTime, DateTimeUnit } from "luxon"
 
 export default class transaction_services {
-    
+    public static async create_category_if_not_exists(request, payload: { create?: string, transaction_category: string, transaction_type: string }, user: { id: number }) {
+        if (payload.create === "y" && (!await typeServices.category_validator(payload.transaction_category, payload.transaction_type, user))) {
+            delete payload.create
+            var sanitized_payload = await request.validate(TransactionVariableValidator)
+            sanitized_payload.user_id = user.id
+            try {
+                await typeServices.create_type(sanitized_payload)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
     public static async amount_sanitizer(payload: { transaction_type: string, amount: number }) {
-        var sign = await TransactionTypeSign.query().where('type',payload.transaction_type)
-        if(sign[0].sign==="-") payload.amount = (payload.amount * -1)
+        try {
+            var sign = await TransactionTypeSign.query().where('type', payload.transaction_type)
+            if (sign[0].sign === "-") payload.amount = (payload.amount * -1)
+        } catch (error) {
+            console.log(error);
+        }
     }
     public static amount_validator(amount) {
         if (amount <= 0) return false

@@ -7,13 +7,13 @@ export default class TransactionTypeSign extends BaseModel {
   public id: number
 
   @column()
-  public user_id: number
+  public admin_id: number
 
-  @column({isPrimary:true})
-  public type:string
+  @column({ isPrimary: true })
+  public type: string
 
-  @column({isPrimary:true})
-  public sign:string
+  @column({ isPrimary: true })
+  public sign: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -21,8 +21,8 @@ export default class TransactionTypeSign extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @belongsTo(() => Admin,{
-    localKey:'user_id'
+  @belongsTo(() => Admin, {
+    localKey: 'admin_id'
   })
   public user: BelongsTo<typeof Admin>
 }

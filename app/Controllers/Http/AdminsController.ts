@@ -29,13 +29,13 @@ export default class AdminsController {
     public async createSign({ request, response, auth }) {
         const user = await auth.user!
         const payload = await request.validate(TransactionTypeSignValidator)
-        payload.user_id = user.id;
+        payload.admin_id = user.id;
         try {
-          await typeServices.create_sign(payload)
-          return httpServices.respond(response, 'Sign Added', payload, 201)
+            await typeServices.create_sign(payload)
+            return httpServices.respond(response, 'Sign Added', payload, 201)
         } catch (error) {
-          console.log(error)
-          return httpServices.respond(response, 'Sign creation failed', payload, 400)
+            console.log(error)
+            return httpServices.respond(response, 'Sign creation failed', payload, 400)
         }
-      }
+    }
 }
