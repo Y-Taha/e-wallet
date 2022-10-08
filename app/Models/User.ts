@@ -3,7 +3,6 @@ import Hash  from '@ioc:Adonis/Core/Hash';
 import { BaseModel, column , beforeSave, hasMany, HasMany} from '@ioc:Adonis/Lucid/Orm'
 import Transaction from './Transaction';
 import TransactionTypesAndCategory from './TransactionTypesAndCategory';
-import TransactionTypeSign from './TransactionTypeSign';
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -39,11 +38,6 @@ export default class User extends BaseModel {
     foreignKey:'user_id'
   })
   public transactionVariable: HasMany<typeof TransactionTypesAndCategory>
-
-  @hasMany(() => TransactionTypeSign,{
-    foreignKey:'user_id'
-  })
-  public transactionSign: HasMany<typeof TransactionTypeSign>
 
   @beforeSave()
   public static async hashPassword(user: User) {

@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm'
-import User from './User'
+import Admin from './Admin'
 
 export default class TransactionTypeSign extends BaseModel {
   @column({ isPrimary: true })
@@ -21,8 +21,8 @@ export default class TransactionTypeSign extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @belongsTo(() => User,{
+  @belongsTo(() => Admin,{
     localKey:'user_id'
   })
-  public user: BelongsTo<typeof User>
+  public user: BelongsTo<typeof Admin>
 }

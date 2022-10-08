@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import adminServices from 'App/utils/AdminServices'
 import httpServices from "App/utils/HttpServices"
-import type_services from 'App/utils/TypeServices'
+import typeServices from 'App/utils/TypeServices'
 import AdminSignupValidator from 'App/Validators/AdminSignupValidator'
 import TransactionTypeSignValidator from 'App/Validators/TransactionTypeSignValidator'
 
@@ -31,7 +31,7 @@ export default class AdminsController {
         const payload = await request.validate(TransactionTypeSignValidator)
         payload.user_id = user.id;
         try {
-          await type_services.create_sign(payload)
+          await typeServices.create_sign(payload)
           return httpServices.respond(response, 'Sign Added', payload, 201)
         } catch (error) {
           console.log(error)
