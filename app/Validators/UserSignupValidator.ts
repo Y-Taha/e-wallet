@@ -26,7 +26,7 @@ export default class UserValidator {
   public schema = schema.create({
     name: schema.string({}, [rules.required(),rules.trim()]),
     password: schema.string({}, [rules.required()]),
-    phone_number: schema.string({}, [rules.required(),rules.mobile({ locale: ['ar-EG'] }),rules.trim()]),
+    phone_number: schema.string({}, [rules.required(),rules.mobile({ locale: ['ar-EG'] }),rules.trim(),rules.unique({table:'users',column:'phone_number'})]),
     email: schema.string({}, [rules.email(), rules.unique({ table: 'users', column: 'email' }), rules.required(),rules.trim()])
   })
 
